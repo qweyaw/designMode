@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function Car() {
+      this.price = 10;
+    }
+
+    function addWithHeatSeat(className) {
+      className.headSeat = true;
+      className.price += 2;
+    }
+
+    function addWithAutoMirror(className) {
+      className.autoMirror = true;
+      className.price += 0.8;
+    }
+
+    let car1 = new Car()
+    console.log(car1); // Car {price: 10}
+    addWithHeatSeat(car1);
+    addWithAutoMirror(car1);
+    console.log(car1); // Car {price: 12.8, headSeat: true, autoMirror: true}
+  </script>
+</body>
+
+</html>

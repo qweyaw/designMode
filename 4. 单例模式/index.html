@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 创建不同对象 */
+    function createSingle1() {
+      return {
+        a: 1
+      }
+    }
+    let single1 = createSingle1()
+    let single2 = createSingle1()
+    console.log(single1 === single2) // false
+    function createSingle2() {
+      this.a = 1
+    }
+    let single3 = new createSingle2()
+    let single4 = new createSingle2()
+    console.log(single3 === single4) // false
+    /* 如已创建，第二次使用原来的 */
+    let _unique = null;
+
+    function createSingle3() {
+      var obj = {
+        a: 1
+      };
+      if (_unique === null) {
+        _unique = obj;
+      }
+      return _unique
+    }
+
+    let s1 = createSingle3();
+    /* 不安全 */
+    /* 
+      _unique = null;
+      console.log(s1 === s2); // false
+    */
+    let s2 = createSingle3();
+    console.log(s1 === s2); // true
+
+    let createSingle4 = (function () {
+      let _unique = null;
+      return function () {
+        function single() {
+          return {
+            a: 1
+          }
+        }
+        if (_unique === null) {
+          _unique = single();
+        }
+        return _unique
+      }
+    })()
+    let s3 = createSingle4();
+    let s4 = createSingle4();
+    console.log(s3 === s4) // true
+  </script>
+</body>
+
+</html>

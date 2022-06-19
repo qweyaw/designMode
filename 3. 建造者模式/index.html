@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let data = [{
+        name: 'aa a',
+        age: 12,
+        work: "aa"
+      },
+      {
+        name: 'bb b',
+        age: 13,
+        work: "bb"
+      },
+      {
+        name: 'cc c',
+        age: 14,
+        work: "cc"
+      }
+    ];
+
+    function Candidate(param) {
+      let _candidate = {};
+      _candidate.name = param.name;
+      _candidate.age = param.age;
+
+      _candidate.firstName = param.name.split(" ")[0];
+      _candidate.lastName = param.name.split(" ")[1];
+
+      _candidate.work = {};
+      switch (param.work) {
+        case "aa":
+          _candidate.work.name = "AA";
+          _candidate.work.description = "AA+"
+          break;
+        case "bb":
+          _candidate.work.name = "BB";
+          _candidate.work.description = "BB+"
+          break;
+        case "cc":
+          _candidate.work.name = "CC";
+          _candidate.work.description = "CC+"
+          break;
+
+        default:
+          _candidate.work.name = param.work;
+          _candidate.work.description = "无";
+      }
+
+      _candidate.work.changeWork = function (work) {
+        this.name = work
+      }
+
+      _candidate.work.changeDescription = function (description) {
+        this.description = description
+      }
+
+      return _candidate
+    }
+
+    let candidate = [];
+    for (let i = 0; i < data.length; i++) {
+      candidate[i] = Candidate(data[i])
+    }
+    console.log(candidate);
+
+    candidate[1].work.changeWork("BBBB")
+    console.log(candidate[1].work);
+
+    function Candidate2(params) {
+      var _candidate = new Person(params);
+
+      _candidate.name = new CreateName(params.name);
+      _candidate.work = new CreateWork(params.work);
+
+      return _candidate
+    }
+
+    function Person(param) {
+      this.name = param.name
+      this.age = param.age
+    }
+
+    function CreateName(name) {
+      this.firstName = name.split(" ")[0];
+      this.lastName = name.split(" ")[1]
+    }
+
+    function CreateWork(work) {
+      switch (work) {
+        case "aa":
+          this.name = "AA";
+          this.description = "AA+"
+          break;
+        case "bb":
+          this.name = "BB";
+          this.description = "BB+"
+          break;
+        case "cc":
+          this.name = "CC";
+          this.description = "CC+"
+          break;
+
+        default:
+          this.name = param.work;
+          this.description = "无";
+      }
+    }
+    CreateWork.prototype.changeWork = function (work) {
+      this.name = work
+    }
+
+    CreateWork.prototype.changeDescription = function (description) {
+      this.description = description
+    }
+
+    let candidate2 = [];
+    for (let i = 0; i < data.length; i++) {
+      candidate2[i] = Candidate2(data[i])
+    }
+    console.log(candidate2);
+
+    candidate2[2].work.changeWork("CCCC")
+    console.log(candidate2[2].work);
+  </script>
+</body>
+
+</html>

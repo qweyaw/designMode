@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var catA = {
+            name: 'catA',
+            eat: function () {
+                console.log('catA eat something');
+            }
+        }
+        var catB = {
+            name: 'catA',
+            eat: function () {
+                console.log('catB eat something');
+            }
+        }
+        var catC = {
+            name: 'catC',
+            eat: function () {
+                console.log('catC eat something');
+            }
+        }
+
+        // 封装
+        // 使用工厂模式进行封装
+        function createCat(name) {
+            var obj = {};
+            obj.name = name;
+            obj.eat = function () {
+                console.log(name + 'eat something');
+            }
+            return obj
+        }
+        var catA = createCat('xiaoA')
+        var catB = createCat('xiaoB')
+        var catC = createCat('xiaoC')
+
+
+        //使用面向对象封装
+        function CreateCat(name) {
+            this.name = name;
+            this.eat = function () {
+                console.log(name + 'eat something');
+            }
+        }
+        var catA = new CreateCat('xiaoA')
+        var catB = new CreateCat('xiaoB')
+        var catC = new CreateCat('xiaoC')
+        /*
+            this:
+            在函数执行的时候会在函数内部创建两个变量，一个是this，一个是arguments
+            在函数执行的时候，this指向的是函数的执行上下文，arguments指向的是 实参 的一个类数组对象
+            new 做了哪些操作
+            1. 创建一个空对象
+            2. 将构造函数的 prototype 属性赋值给空对象的 __proto__ 属性
+            3. 将构造函数的 this 指向新对象
+            4. 执行构造函数的代码
+            5. 返回新对象
+        */
+        var catB = (function () {
+            var obj = {}
+            obj.__proto__ = CreateCat.prototype
+            CreateCat.call(obj, 'xiaoB')
+            return obj
+        })()
+
+        //继承
+        // 在声明函数的时候，会自动创建一个prototype属性，我们管它叫原型，一般用来存放实例的公共方法
+        var CreateCat = function (name) {
+            this.name = name
+        }
+        CreateCat.prototype.eat = function (something) {
+            console.log(this.name + 'eat' + something);
+        }
+        var catA = new CreateCat('xiaoA')
+        /* 
+            catA = {
+                __proto__: CreateCat.prototype,
+                name: 'xiaoA'
+            }
+        */
+        /* 
+            js中规定，访问对象属性的时候，会先在对象本身上查找，如果没有找到，会在原型上(__proto__)查找
+        */
+
+        // 1. 类式继承
+
+        function A(name) {
+            this.name = name;
+            this.list = [1, 2, 3];
+        }
+        A.prototype.getName = function () {
+            console.log(this.name);
+        }
+
+        function subA(name) {
+            this.subName = 'sub' + name;
+        }
+
+        subA.prototype = new A();
+        let sA = new subA('sa1');
+        console.log(sA.name, sA.list); // undefined [ 1, 2, 3 ]
+        /* 
+            subA.prototype = new A() -> 
+            {
+                name: undefined,
+                list: [1, 2, 3],
+                __proto__: {
+                    getName: fn,
+                    constuctor: A
+                }
+
+            }
+            new subA('sa1') -> {
+                subName: 'subsa1',
+                __proto__: {
+                    name: undefined,
+                    list: [1, 2, 3],
+                    __proto__: {
+                        getName: fn,
+                        constuctor: A
+                    }
+                }
+            }
+        
+            类式继承的问题
+            1. 这种方法不支持父构造函数带参数
+            2. 父构造函数里的属性和方法都会变成公有属性
+        */
+
+        // 2. 构造函数继承
+        function B(name) {
+            this.name = name;
+            this.list = [1, 2, 3];
+        }
+        B.prototype.getName = function () {
+            console.log(this.name);
+        }
+
+        function subB(name) {
+            B.call(this, name);
+            this.subName = 'sub' + name;
+        }
+
+        let sa2 = new subB('sa2');
+        console.log(sa2.name, sa2.list); // sa2 [ 1, 2, 3 ]
+        // sa2.getName() // 报错 not a function
+        /* 
+            sa2 = new subB('sa2') -> {
+                __proto__: {constuctor}
+                name: 'sa2',
+                list: [ 1, 2, 3 ],
+                subName: 'subsa2'
+            }
+        
+            构造函数继承问题
+            1. 不能继承父构造函数的原型的属性和方法
+        */
+
+        // 3. 组合式继承
+        function C(name) {
+            this.name = name;
+            this.list = [1, 2, 3];
+        }
+        C.prototype.getName = function () {
+            console.log(this.name);
+        }
+
+        function subC(name) {
+            C.call(this, name);
+            this.subName = 'sub' + name;
+        }
+
+        subC.prototype = new C();
+
+        let sa3 = new subC('sa3');
+        console.log(sa3.name, sa3.list); // sa3 [ 1, 2, 3 ]
+        sa3.getName(); // sa3
+
+        /* 
+            subC.prototype = new C() -> {
+                name: undefined,
+                list: [1, 2, 3],
+                __proto__: {
+                    getName: fn,
+                    constuctor: C
+                }
+            }
+            new sunC('sa3') -> {
+                name: sa3,
+                list: [1, 2, 3],
+                subName: 'subsa3',
+                __proto__: {
+                    name: undefined,
+                    list: [1, 2, 3],
+                    __proto__: {
+                        getName: fn,
+                        constuctor: C
+                    }
+                }
+            }
+
+            // 组合式继承的问题
+            1. __proto__里面的属性没有用
+            2. 执行了两次父构造函数
+        */
+
+        // 寄生组合式继承
+        function D(name) {
+            this.name = name;
+            this.list = [1, 2, 3];
+        }
+        D.prototype.getName = function () {
+            console.log(this.name);
+        }
+
+        function subD(name) {
+            D.call(this, name);
+            this.subName = 'sub' + name;
+        }
+
+        // subC.prototype = new D();
+        function inheritPrototype(subClass, superClass) {
+            function F() {}
+            F.prototype = superClass.prototype;
+            subClass.prototype = new F();
+            subClass.prototype.constructor = subClass;
+        }
+
+        inheritPrototype(subD, D);
+
+        let sa4 = new subD('sa4');
+        console.log(sa4.name, sa4.list); // sa4 [ 1, 2, 3 ]
+        sa4.getName(); // sa4
+
+        // 多态：不同对象调用相同的方法产生不同的结果
+        function Base() {}
+        Base.prototype.initialize = function () {
+            this.init()
+        }
+
+        function E() {
+            this.init = function () {
+                console.log('e init');
+            }
+        }
+
+        function F() {
+            this.init = function () {
+                console.log('f init');
+            }
+        }
+
+        E.prototype = new Base();
+        F.prototype = new Base();
+
+        let e = new E();
+        let f = new F();
+        e.initialize(); // e init
+        f.initialize(); // f init
+    </script>
+</body>
+
+</html>
